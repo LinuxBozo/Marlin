@@ -297,6 +297,9 @@ const bool Z_ENDSTOPS_INVERTING = true; // set to true to invert the logic of th
 #define DEFAULT_ZJERK                 0.4     // (mm/sec)
 #define DEFAULT_EJERK                 5.0    // (mm/sec)
 
+//#define OSCILLATION_DELAY 30
+#define DELAY_WRITE_MICROSECONDS 3
+
 //===========================================================================
 //=============================Additional Features===========================
 //===========================================================================

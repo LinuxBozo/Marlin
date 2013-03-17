@@ -47,6 +47,7 @@ block_t *current_block;  // A pointer to the block currently being traced
 
 // Variables used by The Stepper Driver Interrupt
 static unsigned char out_bits;        // The next stepping-bits to be output
+static unsigned char out_bits_prev = 0xFF;
 static long counter_x,       // Counter variables for the bresenham line tracer
             counter_y, 
             counter_z,       
@@ -342,6 +343,13 @@ ISR(TIMER1_COMPA_vect)
     // Set directions TO DO This should be done once during init of trapezoid. Endstops -> interrupt
     out_bits = current_block->direction_bits;
 
+     // Oscillation delay
+    #ifdef OSCILLATION_DELAY
+    if (out_bits != out_bits_prev){
+      delayMicroseconds(OSCILLATION_DELAY);
+    }
+    #endif
+
     // Set direction en check limit switches
     if ((out_bits & (1<<X_AXIS)) != 0) {   // stepping along -X axis
       #if !defined COREXY  //NOT COREXY
@@ -493,6 +501,13 @@ ISR(TIMER1_COMPA_vect)
       }
     #endif //!ADVANCE
     
+    // Oscillation delay
+    #ifdef OSCILLATION_DELAY
+    if (out_bits != out_bits_prev){
+      delayMicroseconds(OSCILLATION_DELAY);
+    }
+    out_bits_prev = out_bits;
+    #endif
 
     
     for(int8_t i=0; i < step_loops; i++) { // Take multiple steps per interrupt (For high speed moves) 
@@ -516,17 +531,29 @@ ISR(TIMER1_COMPA_vect)
       #if !defined COREXY      
         counter_x += current_block->steps_x;
         if (counter_x > 0) {
+          #ifdef DELAY_WRITE_MICROSECONDS
+          delayMicroseconds(DELAY_WRITE_MICROSECONDS);
+          #endif
           WRITE(X_STEP_PIN, !INVERT_X_STEP_PIN);
           counter_x -= current_block->step_event_count;
           count_position[X_AXIS]+=count_direction[X_AXIS];   
+          #ifdef DELAY_WRITE_MICROSECONDS
+          delayMicroseconds(DELAY_WRITE_MICROSECONDS);
+          #endif
           WRITE(X_STEP_PIN, INVERT_X_STEP_PIN);
         }
   
         counter_y += current_block->steps_y;
         if (counter_y > 0) {
+          #ifdef DELAY_WRITE_MICROSECONDS
+          delayMicroseconds(DELAY_WRITE_MICROSECONDS);
+          #endif
           WRITE(Y_STEP_PIN, !INVERT_Y_STEP_PIN);
           counter_y -= current_block->step_event_count; 
           count_position[Y_AXIS]+=count_direction[Y_AXIS]; 
+          #ifdef DELAY_WRITE_MICROSECONDS
+          delayMicroseconds(DELAY_WRITE_MICROSECONDS);
+          #endif
           WRITE(Y_STEP_PIN, INVERT_Y_STEP_PIN);
         }
       #endif
@@ -581,6 +608,9 @@ ISR(TIMER1_COMPA_vect)
       
       counter_z += current_block->steps_z;
       if (counter_z > 0) {
+        #ifdef DELAY_WRITE_MICROSECONDS
+        delayMicroseconds(DELAY_WRITE_MICROSECONDS);
+        #endif
         WRITE(Z_STEP_PIN, !INVERT_Z_STEP_PIN);
         
 		#ifdef Z_DUAL_STEPPER_DRIVERS
@@ -589,6 +619,9 @@ ISR(TIMER1_COMPA_vect)
         
         counter_z -= current_block->step_event_count;
         count_position[Z_AXIS]+=count_direction[Z_AXIS];
+        #ifdef DELAY_WRITE_MICROSECONDS
+        delayMicroseconds(DELAY_WRITE_MICROSECONDS);
+        #endif
         WRITE(Z_STEP_PIN, INVERT_Z_STEP_PIN);
         
 		#ifdef Z_DUAL_STEPPER_DRIVERS
@@ -599,9 +632,15 @@ ISR(TIMER1_COMPA_vect)
       #ifndef ADVANCE
         counter_e += current_block->steps_e;
         if (counter_e > 0) {
+          #ifdef DELAY_WRITE_MICROSECONDS
+          delayMicroseconds(DELAY_WRITE_MICROSECONDS);
+          #endif
           WRITE_E_STEP(!INVERT_E_STEP_PIN);
           counter_e -= current_block->step_event_count;
           count_position[E_AXIS]+=count_direction[E_AXIS];
+          #ifdef DELAY_WRITE_MICROSECONDS
+          delayMicroseconds(DELAY_WRITE_MICROSECONDS);
+          #endif
           WRITE_E_STEP(INVERT_E_STEP_PIN);
         }
       #endif //!ADVANCE
