@@ -26,6 +26,9 @@
 #if MOTHERBOARD == 7 || MOTHERBOARD == 71
 	#define MACHINE_NAME "Ultimaker"
 	#define FIRMWARE_URL "http://firmware.ultimaker.com"
+#elif MOTHERBOARD == 34
+    #define MACHINE_NAME "Creatr"
+    #define FIRMWARE_URL "https://github.com/LinuxBozo/Marlin"
 #else
 	#define MACHINE_NAME "Mendel"
 	#define FIRMWARE_URL "http://www.mendel-parts.com"
