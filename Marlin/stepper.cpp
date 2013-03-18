@@ -346,7 +346,7 @@ ISR(TIMER1_COMPA_vect)
     // Set directions TO DO This should be done once during init of trapezoid. Endstops -> interrupt
     out_bits = current_block->direction_bits;
 
-     // Oscillation delay
+    // Oscillation delay
     #ifdef OSCILLATION_DELAY
     if (out_bits != out_bits_prev){
       delayMicroseconds(OSCILLATION_DELAY);
@@ -539,11 +539,11 @@ ISR(TIMER1_COMPA_vect)
           #endif
           WRITE(X_STEP_PIN, !INVERT_X_STEP_PIN);
           counter_x -= current_block->step_event_count;
-          count_position[X_AXIS]+=count_direction[X_AXIS];   
           #ifdef DELAY_WRITE_MICROSECONDS
           delayMicroseconds(DELAY_WRITE_MICROSECONDS);
           #endif
           WRITE(X_STEP_PIN, INVERT_X_STEP_PIN);
+          count_position[X_AXIS]+=count_direction[X_AXIS];
         }
   
         counter_y += current_block->steps_y;
@@ -552,12 +552,12 @@ ISR(TIMER1_COMPA_vect)
           delayMicroseconds(DELAY_WRITE_MICROSECONDS);
           #endif
           WRITE(Y_STEP_PIN, !INVERT_Y_STEP_PIN);
-          counter_y -= current_block->step_event_count; 
-          count_position[Y_AXIS]+=count_direction[Y_AXIS]; 
+          counter_y -= current_block->step_event_count;
           #ifdef DELAY_WRITE_MICROSECONDS
           delayMicroseconds(DELAY_WRITE_MICROSECONDS);
           #endif
           WRITE(Y_STEP_PIN, INVERT_Y_STEP_PIN);
+          count_position[Y_AXIS]+=count_direction[Y_AXIS];
         }
       #endif
   
@@ -621,7 +621,6 @@ ISR(TIMER1_COMPA_vect)
         #endif
         
         counter_z -= current_block->step_event_count;
-        count_position[Z_AXIS]+=count_direction[Z_AXIS];
         #ifdef DELAY_WRITE_MICROSECONDS
         delayMicroseconds(DELAY_WRITE_MICROSECONDS);
         #endif
@@ -630,6 +629,7 @@ ISR(TIMER1_COMPA_vect)
 		#ifdef Z_DUAL_STEPPER_DRIVERS
           WRITE(Z2_STEP_PIN, INVERT_Z_STEP_PIN);
         #endif
+        count_position[Z_AXIS]+=count_direction[Z_AXIS];
       }
 
       #ifndef ADVANCE
@@ -640,11 +640,11 @@ ISR(TIMER1_COMPA_vect)
           #endif
           WRITE_E_STEP(!INVERT_E_STEP_PIN);
           counter_e -= current_block->step_event_count;
-          count_position[E_AXIS]+=count_direction[E_AXIS];
           #ifdef DELAY_WRITE_MICROSECONDS
           delayMicroseconds(DELAY_WRITE_MICROSECONDS);
           #endif
           WRITE_E_STEP(INVERT_E_STEP_PIN);
+          count_position[E_AXIS]+=count_direction[E_AXIS];
         }
       #endif //!ADVANCE
       step_events_completed += 1;  
