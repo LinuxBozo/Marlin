@@ -1,5 +1,10 @@
 WARNING: 
 --------
+This is a custom version of the Marlin firmware for the Leapfrog Creatr and it's crazy stepper drivers. This should still work with other machines, just comment out the delay settings. This should also be a good basis for playing with the write delays on each x/y/z/e move if you are using stepper drivers with any optocouplers/opto-isolator.  USE AT YOUR OWN RISK.
+
+Assumes Dual Head, Z Ball spindle version of the Creatr. You will have to modify the Configuration.h and Configuration_adv.h if you have the single extruder or m8/m10 Z spindles.
+
+
 THIS IS RELEASE CANDIDATE 2 FOR MARLIN 1.0.0
 
 The configuration is now split in two files
